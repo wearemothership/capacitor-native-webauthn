@@ -23,7 +23,7 @@ import Foundation
         var val:Bool = false
         switch webAuthnType {
         case .WEBAUTHN:
-            val = false
+            val = true
         case .WEBAUTHNAUTOFILL:
             val = false
         }
