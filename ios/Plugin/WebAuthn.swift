@@ -23,7 +23,12 @@ import Foundation
         var val:Bool = false
         switch webAuthnType {
         case .WEBAUTHN:
-            val = true
+			if #available(iOS 17.4, *) {
+				val = true
+			} else {
+				val = false
+			}
+            
         case .WEBAUTHNAUTOFILL:
             val = false
         }
