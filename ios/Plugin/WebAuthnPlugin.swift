@@ -28,11 +28,13 @@ class GetAppleSignInHandler: NSObject, ASAuthorizationControllerDelegate {
         super.init()
     }
     
+    @available(iOS 17.4, *)
     func register() {
         let _challenge: String = call.getString("challenge")!
         let _userid: String = call.getObject("user")?["id"] as! String
         let _username: String = call.getObject("user")?["name"] as! String
         let _rp: String = call.getObject("rp")?["id"] as! String
+        let _origin: String = "https://\(_rp)"
         
         let challengeData = Data(base64urlEncoded: _challenge)!
         let useridData = Data(_userid.utf8)
@@ -161,20 +163,22 @@ public class WebAuthnPlugin: CAPPlugin {
     
     @objc func isWebAuthnAvailable(_ call: CAPPluginCall) {
         call.resolve([
-            "isWebAuthnAvailable": implementation.isWebAuthnAvailable()
+            "value": implementation.isWebAuthnAvailable()
         ])
     }
     
     @objc func isWebAuthnAutoFillAvailable(_ call: CAPPluginCall) {
         call.resolve([
-            "isWebAuthnAutoFillAvailable": implementation.isWebAuthnAutoFillAvailable()
+            "value": implementation.isWebAuthnAutoFillAvailable()
         ])
     }
     
     @objc func startRegistration(_ call: CAPPluginCall) {
-        DispatchQueue.main.async {
+        if #available(iOS 17.4, *) {
             self.signInHandler = GetAppleSignInHandler(call: call, window: (self.bridge?.webView?.window)!)
             self.signInHandler?.register()
+        } else {
+            // Fallback on earlier versions
         }
     }
     
