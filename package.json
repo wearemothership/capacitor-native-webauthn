@@ -1,6 +1,6 @@
 {
     "name": "@wearemothership/capacitor-native-webauthn",
-    "version": "0.1.4",
+    "version": "0.1.0",
     "description": "This plugin gives access to the native webauthn / passkey apis for android/ios",
     "main": "dist/plugin.cjs.js",
     "module": "dist/esm/index.js",
