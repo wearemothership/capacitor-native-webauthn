@@ -34,7 +34,6 @@ class GetAppleSignInHandler: NSObject, ASAuthorizationControllerDelegate {
         let _userid: String = call.getObject("user")?["id"] as! String
         let _username: String = call.getObject("user")?["name"] as! String
         let _rp: String = call.getObject("rp")?["id"] as! String
-        let _origin: String = "https://\(_rp)"
         
         let challengeData = Data(base64urlEncoded: _challenge)!
         let useridData = Data(_userid.utf8)
@@ -51,6 +50,7 @@ class GetAppleSignInHandler: NSObject, ASAuthorizationControllerDelegate {
         authController.performRequests()
     }
     
+	@available(iOS 17.4, *)
     func authenticate() {
         let _challenge: String = call.getString("challenge")!
         let _rp: String = call.getString("rpId")!
@@ -65,6 +65,7 @@ class GetAppleSignInHandler: NSObject, ASAuthorizationControllerDelegate {
         authController.performRequests()
     }
     
+    @available(iOS 17.4, *)
     func getAuthenticatorAttachment(attachment: ASAuthorizationPublicKeyCredentialAttachment) -> String {
         var type = Attachment.PLATFORM.rawValue
         if attachment.rawValue == 1 {
@@ -75,6 +76,9 @@ class GetAppleSignInHandler: NSObject, ASAuthorizationControllerDelegate {
       }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+		guard #available(iOS 17.4, *) else {
+			return
+		}
         switch authorization.credential {
         case let credentialRegistration as ASAuthorizationPlatformPublicKeyCredentialRegistration:
             let id = credentialRegistration.credentialID.base64urlEncodedString()
@@ -183,6 +187,9 @@ public class WebAuthnPlugin: CAPPlugin {
     }
     
     @objc func startAuthentication(_ call: CAPPluginCall) {
+		guard #available(iOS 17.4, *) else {
+			return
+		}
         DispatchQueue.main.async {
             self.signInHandler = GetAppleSignInHandler(call: call, window: (self.bridge?.webView?.window)!)
             self.signInHandler?.authenticate()
